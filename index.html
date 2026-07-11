@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   1. СБРОС СТИЛЕЙ И ЖИВОЙ АНИМИРОВАННЫЙ ФОН
+   ========================================================================== */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+    background-color: #FEFEFE; /* Мягкий базовый цвет */
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 16px;
+    position: relative;
+    overflow-x: hidden; /* Чтобы шары не создавали горизонтальную прокрутку */
+    /* Включает плавный «родной» скролл для iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Управляет тем, как страница реагирует на жесты */
+    touch-action: pan-y;
+}
+
+/* Контейнер для летающих шаров */
+.aurora-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    overflow: hidden;
+}
+
+/* Общие свойства для шаров */
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px); /* Сильное размытие для эффекта градиента */
+    opacity: 0.5; 
+    mix-blend-mode: multiply; /* Красивое смешивание цветов */
+    will-change: transform, filter; /* Аппаратное ускорение для плавности на iOS */
+}
+
+/* Настройки для десктопа (по умолчанию) */
+.blob-1 {
+    top: -10%;
+    left: -10%;
+    width: 450px;
+    height: 450px;
+    background: #4facfe; /* Ярко-синий */
+    animation: fly-1 12s infinite alternate ease-in-out; 
+}
+
+.blob-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: #00f2fe; /* Голубой / Бирюзовый */
+    animation: fly-2 14s infinite alternate ease-in-out; 
+}
+
+.blob-3 {
+    top: 40%;
+    left: 50%;
+    width: 350px;
+    height: 350px;
+    background: #7f00ff; /* Фиолетово-синий */
+    animation: fly-3 10s infinite alternate ease-in-out; 
+}
+
+/* Траектории движения (плавный хаос) */
+@keyframes fly-1 {
+    0% { transform: translate(0px, 0px) scale(1); }
+    100% { transform: translate(150px, 200px) scale(1.2); filter: blur(100px); }
+}
+
+@keyframes fly-2 {
+    0% { transform: translate(0px, 0px) scale(1.1); }
+    100% { transform: translate(-200px, -150px) scale(0.9); filter: blur(70px); }
+}
+
+@keyframes fly-3 {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    100% { transform: translate(-20%, 30%) scale(1.3); filter: blur(90px); }
+}
+
+/* Адаптация размеров шаров строго для мобильных устройств */
+@media (max-width: 480px) {
+    .blob-1 {
+        width: 260px;
+        height: 260px;
+    }
+    .blob-2 {
+        width: 280px;
+        height: 280px;
+    }
+    .blob-3 {
+        width: 220px;
+        height: 220px;
+    }
+}
+
+/* ==========================================================================
+   2. ПРЕМИАЛЬНОЕ ЖИДКОЕ СТЕКЛО (ГЛУБОКИЙ БЛЮР + СЛОЖНАЯ ТЕНЬ)
+   ========================================================================== */
+.glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%);
+    backdrop-filter: blur(25px); 
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 24px;
+    padding: 26px 20px;
+    width: 100%;
+    box-shadow: 
+        0 4px 30px rgba(0, 0, 0, 0.01),
+        0 12px 40px rgba(0, 0, 0, 0.03),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 1; /* Контент поверх фона */
+}
+
+/* ==========================================================================
+   3. КАРТОЧКА ПРОФИЛЯ
+   ========================================================================== */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.profile-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: #222222;
+    line-height: 1.2;
+    margin-bottom: 14px;
+}
+
+.profile-desc {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333333;
+    font-weight: 400;
+}
+
+/* ==========================================================================
+   4. КАРТОЧКА С КНОПКАМИ И ОБЩИЕ СТИЛИ КНОПОК
+   ========================================================================== */
+.links-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.glass-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #222222;
+    font-size: 16px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+    .glass-btn:hover {
+        background: rgba(255, 255, 255, 0.65);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.02);
+    }
+}
+
+.glass-btn:active {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(0.98) translateY(0px);
+}
+
+.btn-subtext {
+    font-weight: 400;
+    font-size: 14px;
+    opacity: 0.75;
+    margin-left: 4px;
+}
+
+/* ==========================================================================
+   5. КАРТОЧКИ С ПРОЕКТАМИ И ВЕРТИКАЛЬНЫМИ АВТО-СЛАЙДЕРАМИ
+   ========================================================================== */
+.project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.project-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #222222;
+}
+
+.project-desc {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333333;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.slider-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.slider-container img.active {
+    opacity: 1;
+}
+
+.project-card .glass-btn {
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   6. АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА (Приоритетное перекрытие стилей)
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000000 !important;
+    }
+
+    .blob {
+        mix-blend-mode: screen !important;
+        opacity: 0.35 !important;
+    }
+
+    .glass-card {
+        background: linear-gradient(135deg, rgba(20, 20, 25, 0.65) 0%, rgba(10, 10, 15, 0.45) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 
+            0 4px 30px rgba(0, 0, 0, 0.2),
+            0 12px 40px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .glass-btn {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #E5E5EA !important;
+    }
+
+    @media (hover: hover) {
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+        }
+    }
+    
+    .glass-btn:active {
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .slider-container {
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: rgba(255, 255, 255, 0.03) !important;
+    }
+    
+    .profile-name, 
+    .project-title {
+        color: #F2F2F7 !important;
+    }
+
+    .profile-desc, 
+    .project-desc {
+        color: #AEAEB2 !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="aurora-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+</div>
+
+<div class="main-wrapper">
+
+    <div class="glass-card profile-card">
+        <img class="profile-avatar" src="https://lh3.googleusercontent.com/d/1c3X--w0VXibdmDY6GEwELzwMRvm-hzKq" alt="Alexander">
+        <h2 class="profile-name">Alexander Novi</h2>
+        <div class="profile-desc">
+            Apple & tech geek<br>
+            Guy from the North<br>
+            22⚡️
+        </div>
+    </div>
+
+    <div class="glass-card links-card">
+        <a href="" target="_blank" class="glass-btn">
+            Threads
+        </a>
+        <a href="" target="_blank" class="glass-btn">
+            Stock wallpapers archive
+        </a>
+    </div>
+
+    <div class="glass-card project-card">
+        <h3 class="project-title">Project One</h3>
+        <p class="project-desc">Здесь будет описание твоего первого проекта или набора обоев. Расскажи кратко, о чём речь.</p>
+         
+        <div class="slider-container auto-slider">
+            <img src="https://picsum.photos/400/500?random=1" class="active" alt="Slide 1">
+            <img src="https://picsum.photos/400/500?random=2" alt="Slide 2">
+            <img src="https://picsum.photos/400/500?random=3" alt="Slide 3">
+        </div>
+
+        <a href="" target="_blank" class="glass-btn">View Project</a>
+    </div>
+
+    <div class="glass-card project-card">
+        <h3 class="project-title">Project Two</h3>
+        <p class="project-desc">Описание для второго проекта. Стильный текст, который дополнит визуал в слайдере выше.</p>
+         
+        <div class="slider-container auto-slider">
+            <img src="https://picsum.photos/400/500?random=4" class="active" alt="Slide 1">
+            <img src="https://picsum.photos/400/500?random=5" alt="Slide 2">
+            <img src="https://picsum.photos/400/500?random=6" alt="Slide 3">
+        </div>
+
+        <a href="" target="_blank" class="glass-btn">View Project</a>
+    </div>
+
+    <div class="glass-card project-card">
+        <h3 class="project-title">Project Three</h3>
+        <p class="project-desc">Описание для третьего проекта. Всё выстроено в едином аккуратном мобильном стиле.</p>
+         
+        <div class="slider-container auto-slider">
+            <img src="https://picsum.photos/400/500?random=7" class="active" alt="Slide 1">
+            <img src="https://picsum.photos/400/500?random=8" alt="Slide 2">
+            <img src="https://picsum.photos/400/500?random=9" alt="Slide 3">
+        </div>
+
+        <a href="" target="_blank" class="glass-btn">View Project</a>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const sliders = document.querySelectorAll('.auto-slider');
+     
+    sliders.forEach(slider => {
+        const images = slider.querySelectorAll('img');
+        let currentIndex = 0;
+         
+        setInterval(() => {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }, 3500);
+    });
+});
+</script>
+
+</body>
+</html>
