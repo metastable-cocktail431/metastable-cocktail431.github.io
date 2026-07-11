@@ -1,0 +1,43 @@
+[
+  {
+    "title": "Neon Wave",
+    "brand": "authors",
+    "isPremium": true,
+    "koFiUrl": "https://ko-fi.com",
+    "previews": ["https://picsum.photos/400/711?random=11"],
+    "allImages": []
+  },
+  {
+    "title": "iPhone 16 Pro",
+    "brand": "apple",
+    "isPremium": false,
+    "zipUrl": "https://google.com",
+    "previews": [
+      "https://picsum.photos/400/711?random=1",
+      "https://picsum.photos/400/711?random=2",
+      "https://picsum.photos/400/711?random=3"
+    ],
+    "allImages": [
+      "https://picsum.photos/400/711?random=1",
+      "https://picsum.photos/400/711?random=2",
+      "https://picsum.photos/400/711?random=3",
+      "https://picsum.photos/400/711?random=4",
+      "https://picsum.photos/400/711?random=5"
+    ]
+  },
+  {
+    "title": "Pixel 10 Pro",
+    "brand": "google",
+    "isPremium": false,
+    "zipUrl": "https://google.com",
+    "previews": [
+      "https://picsum.photos/400/711?random=6",
+      "https://picsum.photos/400/711?random=7"
+    ],
+    "allImages": [
+      "https://picsum.photos/400/711?random=6",
+      "https://picsum.photos/400/711?random=7",
+      "https://picsum.photos/400/711?random=8"
+    ]
+  }
+]
