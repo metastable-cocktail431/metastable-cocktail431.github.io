@@ -34,7 +34,7 @@ body {
 .blob-3 { top: 40%; left: 50%; width: 350px; height: 350px; background: #7f00ff; }
 
 .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.35) 100%);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(255, 255, 255, 0.45);
@@ -87,7 +87,7 @@ body {
 }
 
 /* ==========================================================================
-   ДВУХКОЛОНОЧНАЯ СЕТКА И КАРТОЧКИ СТРОГО 9:16
+   ИСПРАВЛЕННАЯ СЕТКА И КАРТОЧКИ (ТЕКСТ ПОД КАРТИНКОЙ НА СТЕКЛЕ)
    ========================================================================== */
 .wallpaper-grid {
     display: grid;
@@ -97,9 +97,9 @@ body {
 }
 
 .wallpaper-card {
-    position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    aspect-ratio: 9 / 16; /* Строго 16:9 по вертикали */
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.25s ease;
@@ -116,6 +116,15 @@ body {
     background-clip: padding-box, border-box;
 }
 
+/* Область картинки строго сохраняет пропорции экрана смартфона */
+.card-media-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 .card-slider {
     position: absolute; top:0; left:0; width:100%; height:100%; z-index: 1;
 }
@@ -129,18 +138,28 @@ body {
     position: absolute; top: 10px; left: 10px; z-index: 2;
     padding: 4px 8px; font-size: 10px; font-weight: 900;
     text-transform: uppercase; border-radius: 6px;
-    background: rgba(255, 255, 255, 0.75); color: #222;
+    background: rgba(255, 255, 255, 0.8); color: #222;
 }
 .premium-badge {
     background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%); color: #fff;
 }
 
+/* Нижняя стеклянная плашка для текста */
 .card-info {
-    position: absolute; bottom: 0; left: 0; width: 100%;
-    padding: 30px 12px 12px 12px; z-index: 2;
-    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    z-index: 2;
 }
-.card-title { font-size: 15px; font-weight: 700; color: #ffffff; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+.card-title { 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #111111; 
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /* ==========================================================================
    ВСПЛЫВАЮЩЕЕ ОКНО (MODAL POPUP)
@@ -190,7 +209,9 @@ body {
     color: #222; background: rgba(255,255,255,0.85); border-radius: 8px; backdrop-filter: blur(5px);
 }
 
-/* АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА */
+/* ==========================================================================
+   АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА
+   ========================================================================== */
 @media (prefers-color-scheme: dark) {
     body { background-color: #000000 !important; }
     .blob { mix-blend-mode: screen !important; opacity: 0.35 !important; }
@@ -206,11 +227,19 @@ body {
         background: linear-gradient(135deg, rgba(20, 20, 25, 0.65) 0%, rgba(10, 10, 15, 0.45) 100%) !important;
         border: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
+    
+    /* Коррекция цветов текста для карточек в тёмной теме */
+    .card-media-wrapper { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .card-title { color: #FFFFFF !important; }
+    .badge { background: rgba(0, 0, 0, 0.6); color: #fff; }
+    .premium-badge { background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%); }
+
     .modal-overlay { background: rgba(0,0,0,0.5); }
     .modal-title { color: #fff; }
     .modal-close { background: rgba(255,255,255,0.1); color: #fff; }
     .glass-btn { background: rgba(255, 255, 255, 0.08) !important; color: #E5E5EA !important; border: 1px solid rgba(255,255,255,0.08); }
     .download-single-btn { background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    
     .premium-card {
         background-image: linear-gradient(rgba(20, 20, 25, 0.65), rgba(10, 10, 15, 0.45)), 
                           linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%);
