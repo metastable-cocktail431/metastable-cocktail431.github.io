@@ -1,43 +1,41 @@
 [
   {
-    "title": "Neon Wave",
+    "title": "Neon Wave Pack",
     "brand": "authors",
-    "isPremium": true,
-    "koFiUrl": "https://ko-fi.com",
-    "previews": ["https://picsum.photos/400/711?random=11"],
-    "allImages": []
-  },
-  {
-    "title": "iPhone 16 Pro",
-    "brand": "apple",
     "isPremium": false,
-    "zipUrl": "https://google.com",
+    "zipUrl": "https://example.com/neon-wave.zip",
     "previews": [
+      "https://picsum.photos/400/711?random=1",
+      "https://picsum.photos/400/711?random=2"
+    ],
+    "allImages": [
       "https://picsum.photos/400/711?random=1",
       "https://picsum.photos/400/711?random=2",
       "https://picsum.photos/400/711?random=3"
-    ],
-    "allImages": [
-      "https://picsum.photos/400/711?random=1",
-      "https://picsum.photos/400/711?random=2",
-      "https://picsum.photos/400/711?random=3",
-      "https://picsum.photos/400/711?random=4",
-      "https://picsum.photos/400/711?random=5"
     ]
   },
   {
-    "title": "Pixel 10 Pro",
-    "brand": "google",
+    "title": "Single Space Art",
+    "brand": "authors",
     "isPremium": false,
-    "zipUrl": "https://google.com",
+    "zipUrl": "",
     "previews": [
-      "https://picsum.photos/400/711?random=6",
-      "https://picsum.photos/400/711?random=7"
+      "https://picsum.photos/400/711?random=10"
+    ],
+    "allImages": []
+  },
+  {
+    "title": "iPhone 16 Pro Stock",
+    "brand": "apple",
+    "isPremium": false,
+    "zipUrl": "https://example.com/iphone16.zip",
+    "previews": [
+      "https://picsum.photos/400/711?random=20",
+      "https://picsum.photos/400/711?random=21"
     ],
     "allImages": [
-      "https://picsum.photos/400/711?random=6",
-      "https://picsum.photos/400/711?random=7",
-      "https://picsum.photos/400/711?random=8"
+      "https://picsum.photos/400/711?random=20",
+      "https://picsum.photos/400/711?random=21"
     ]
   }
 ]
