@@ -1,0 +1,218 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #FEFEFE;
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 85px 12px 30px 12px;
+    position: relative;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================================================================
+   ФОН И ЖИДКОЕ СТЕКЛО (1 в 1 как на главной)
+   ========================================================================== */
+.aurora-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; overflow: hidden;
+}
+.blob {
+    position: absolute; border-radius: 50%; filter: blur(80px);
+    opacity: 0.5; mix-blend-mode: multiply; transform: translate3d(0, 0, 0);
+}
+.blob-1 { top: -10%; left: -10%; width: 450px; height: 450px; background: #4facfe; }
+.blob-2 { bottom: -10%; right: -10%; width: 500px; height: 500px; background: #00f2fe; }
+.blob-3 { top: 40%; left: 50%; width: 350px; height: 350px; background: #7f00ff; }
+
+.glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01), 0 12px 40px rgba(0, 0, 0, 0.03);
+}
+
+/* ==========================================================================
+   ШАПКА И ФИЛЬТРЫ
+   ========================================================================== */
+.sticky-header {
+    position: fixed; top: 12px; width: calc(100% - 24px); max-width: 480px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 100%);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 18px;
+    padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 999;
+}
+.header-title { font-size: 16px; font-weight: 700; color: #222222; }
+.header-links { display: flex; gap: 8px; }
+.header-btn {
+    padding: 6px 14px; font-size: 13px; font-weight: 700; text-decoration: none;
+    color: #222222; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 10px;
+}
+
+.archive-wrapper {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.filter-container {
+    padding: 8px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.filter-container::-webkit-scrollbar { display: none; }
+
+.filter-btn {
+    padding: 8px 16px; border: none; background: transparent;
+    font-size: 14px; font-weight: 700; color: #444; border-radius: 12px;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.filter-btn.active {
+    background: rgba(255, 255, 255, 0.75); color: #000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+/* ==========================================================================
+   ДВУХКОЛОНОЧНАЯ СЕТКА И КАРТОЧКИ СТРОГО 9:16
+   ========================================================================== */
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.wallpaper-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16; /* Строго 16:9 по вертикали */
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+    padding: 0;
+}
+.wallpaper-card:active { transform: scale(0.97); }
+
+/* Выделение твоих авторских премиум-карточек градиентным бордером */
+.premium-card {
+    border: 2px solid transparent;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4)), 
+                      linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+.card-slider {
+    position: absolute; top:0; left:0; width:100%; height:100%; z-index: 1;
+}
+.card-slider img {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+    object-fit: cover; opacity: 0; transition: opacity 0.6s ease-in-out;
+}
+.card-slider img.active { opacity: 1; }
+
+.badge {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    padding: 4px 8px; font-size: 10px; font-weight: 900;
+    text-transform: uppercase; border-radius: 6px;
+    background: rgba(255, 255, 255, 0.75); color: #222;
+}
+.premium-badge {
+    background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%); color: #fff;
+}
+
+.card-info {
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    padding: 30px 12px 12px 12px; z-index: 2;
+    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+}
+.card-title { font-size: 15px; font-weight: 700; color: #ffffff; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+
+/* ==========================================================================
+   ВСПЛЫВАЮЩЕЕ ОКНО (MODAL POPUP)
+   ========================================================================== */
+.modal-overlay {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.15); z-index: 1000;
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+.modal-content {
+    width: 100%; max-width: 480px; height: 85vh;
+    border-radius: 24px 24px 0 0; padding: 24px 16px;
+    overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+.modal-overlay.active .modal-content { transform: translateY(0); }
+
+.modal-close {
+    position: absolute; top: 18px; right: 16px; border: none;
+    background: rgba(255,255,255,0.6); font-size: 16px; font-weight: 700;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+}
+.modal-title { font-size: 22px; font-weight: 900; color: #222; margin-bottom: 16px; padding-right: 40px; }
+
+.glass-btn {
+    display: block; width: 100%; padding: 12px; text-align: center;
+    text-decoration: none; color: #222; font-size: 15px; font-weight: 700;
+    background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 14px;
+}
+.zip-download-btn { background: rgba(255, 255, 255, 0.8); margin-bottom: 20px; }
+
+.modal-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+}
+.modal-item-wrapper {
+    position: relative; width: 100%; aspect-ratio: 9 / 16;
+    border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.3);
+}
+.modal-item-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+.download-single-btn {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    padding: 6px 12px; font-size: 12px; font-weight: 700; text-decoration: none;
+    color: #222; background: rgba(255,255,255,0.85); border-radius: 8px; backdrop-filter: blur(5px);
+}
+
+/* АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА */
+@media (prefers-color-scheme: dark) {
+    body { background-color: #000000 !important; }
+    .blob { mix-blend-mode: screen !important; opacity: 0.35 !important; }
+    .sticky-header {
+        background: linear-gradient(135deg, rgba(20, 20, 25, 0.7) 0%, rgba(10, 10, 15, 0.5) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .header-title { color: #F2F2F7 !important; }
+    .header-btn, .filter-btn { color: #E5E5EA !important; background: rgba(255, 255, 255, 0.05); border: none; }
+    .filter-btn.active { background: rgba(255, 255, 255, 0.15) !important; color: #fff !important; }
+    
+    .glass-card {
+        background: linear-gradient(135deg, rgba(20, 20, 25, 0.65) 0%, rgba(10, 10, 15, 0.45) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+    .modal-overlay { background: rgba(0,0,0,0.5); }
+    .modal-title { color: #fff; }
+    .modal-close { background: rgba(255,255,255,0.1); color: #fff; }
+    .glass-btn { background: rgba(255, 255, 255, 0.08) !important; color: #E5E5EA !important; border: 1px solid rgba(255,255,255,0.08); }
+    .download-single-btn { background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .premium-card {
+        background-image: linear-gradient(rgba(20, 20, 25, 0.65), rgba(10, 10, 15, 0.45)), 
+                          linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%);
+    }
+}
