@@ -1,0 +1,137 @@
+<script>
+let wallpaperData = []; // Сюда загрузятся данные из JSON
+let currentFilter = 'all';
+
+// Функция, которая загружает данные из отдельного файла wallpapers.json
+async function loadWallpaperData() {
+    try {
+        // Сайт сам читает внешний файл данных
+        const response = await fetch('wallpapers.json');
+        wallpaperData = await response.json();
+        renderGrid(); // После загрузки рисуем сетку
+    } catch (error) {
+        console.error("Ошибка загрузки базы данных обоев:", error);
+    }
+}
+
+// Рендеринг карточек на витрину
+function renderGrid() {
+    const grid = document.getElementById('wallpaperGrid');
+    grid.innerHTML = '';
+    
+    // Автоматический реверс: новое в файле JSON всегда будет первым на экране!
+    const displayData = [...wallpaperData].reverse();
+
+    displayData.forEach((item) => {
+        if (currentFilter !== 'all' && item.brand !== currentFilter) return;
+
+        const card = document.createElement('div');
+        card.className = `glass-card wallpaper-card ${item.isPremium ? 'premium-card' : ''}`;
+        
+        let mediaHtml = '';
+        if (item.previews.length > 1) {
+            mediaHtml = `<div class="card-slider">`;
+            item.previews.forEach((img, i) => {
+                mediaHtml += `<img src="${img}" class="${i === 0 ? 'active' : ''}" alt="Preview">`;
+            });
+            mediaHtml += `</div>`;
+        } else {
+            mediaHtml = `<div class="card-slider"><img src="${item.previews[0]}" class="active" alt="Preview"></div>`;
+        }
+
+        const badge = item.isPremium ? `<span class="badge premium-badge">Original</span>` : `<span class="badge">Stock</span>`;
+
+        card.innerHTML = `
+            ${mediaHtml}
+            ${badge}
+            <div class="card-info">
+                <h3 class="card-title">${item.title}</h3>
+            </div>
+        `;
+
+        card.onclick = () => {
+            if (item.isPremium) {
+                window.open(item.koFiUrl, '_blank');
+            } else {
+                openModal(item);
+            }
+        };
+
+        grid.appendChild(card);
+    });
+
+    initSliders();
+}
+
+// Запуск слайдеров, которые работают только в поле видимости
+function initSliders() {
+    const sliders = document.querySelectorAll('.card-slider');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const slider = entry.target;
+            if (entry.isIntersecting) {
+                if (!slider.dataset.intervalId) {
+                    const images = slider.querySelectorAll('img');
+                    if (images.length <= 1) return;
+                    let idx = 0;
+                    const intervalId = setInterval(() => {
+                        images[idx].classList.remove('active');
+                        idx = (idx + 1) % images.length;
+                        images[idx].classList.add('active');
+                    }, 3000);
+                    slider.dataset.intervalId = intervalId;
+                }
+            } else {
+                if (slider.dataset.intervalId) {
+                    clearInterval(parseInt(slider.dataset.intervalId));
+                    slider.removeAttribute('data-dataset-interval-id');
+                    slider.dataset.intervalId = '';
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    sliders.forEach(s => observer.observe(s));
+}
+
+function filterBrand(brand) {
+    currentFilter = brand;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    renderGrid();
+}
+
+function openModal(item) {
+    const modal = document.getElementById('wallpaperModal');
+    document.getElementById('modalTitle').innerText = item.title;
+    
+    const zipBtn = document.getElementById('modalZipBtn');
+    zipBtn.href = item.zipUrl;
+
+    const modalGrid = document.getElementById('modalGrid');
+    modalGrid.innerHTML = '';
+
+    item.allImages.forEach(imgUrl => {
+        const itemWrapper = document.createElement('div');
+        itemWrapper.className = 'modal-item-wrapper';
+        itemWrapper.innerHTML = `
+            <img src="${imgUrl}" alt="Wallpaper">
+            <a href="${imgUrl}" download target="_blank" class="download-single-btn">Скачать</a>
+        `;
+        modalGrid.appendChild(itemWrapper);
+    });
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+    const modal = document.getElementById('wallpaperModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// При старте страницы запускаем загрузку внешнего JSON-файла
+document.addEventListener("DOMContentLoaded", loadWallpaperData);
+</script>
