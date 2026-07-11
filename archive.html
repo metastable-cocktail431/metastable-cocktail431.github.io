@@ -43,7 +43,6 @@
         <button class="modal-close" onclick="closeModal(event)">✕</button>
         <h2 class="modal-title" id="modalTitle">Collection</h2>
         <a href="#" id="modalZipBtn" target="_blank" rel="noopener noreferrer" class="glass-btn zip-download-btn">Download full pack (.zip)</a>
-        
         <div class="modal-grid" id="modalGrid"></div>
     </div>
 </div>
@@ -52,7 +51,6 @@
 let wallpaperData = []; 
 let currentFilter = 'all';
 
-// Загрузка данных из внешнего JSON-файла
 async function loadWallpaperData() {
     try {
         const response = await fetch('wallpapers.json');
@@ -63,12 +61,10 @@ async function loadWallpaperData() {
     }
 }
 
-// Рендеринг карточек на витрину
 function renderGrid() {
     const grid = document.getElementById('wallpaperGrid');
     grid.innerHTML = '';
     
-    // Автоматический реверс новинок наверх
     const displayData = [...wallpaperData].reverse();
 
     displayData.forEach((item) => {
@@ -77,22 +73,21 @@ function renderGrid() {
         const card = document.createElement('div');
         card.className = `glass-card wallpaper-card ${item.isPremium ? 'premium-card' : ''}`;
         
-        // Генерируем медиа-блок со слайдером внутри отдельного контейнера
         let mediaHtml = '<div class="card-media-wrapper">';
-        if (item.previews.length > 1) {
+        if (item.previews && item.previews.length > 1) {
             mediaHtml += `<div class="card-slider">`;
             item.previews.forEach((img, i) => {
                 mediaHtml += `<img src="${img}" class="${i === 0 ? 'active' : ''}" alt="Preview">`;
             });
             mediaHtml += `</div>`;
         } else {
-            mediaHtml += `<div class="card-slider"><img src="${item.previews[0]}" class="active" alt="Preview"></div>`;
+            const singleImg = (item.previews && item.previews.length > 0) ? item.previews[0] : '';
+            mediaHtml += `<div class="card-slider"><img src="${singleImg}" class="active" alt="Preview"></div>`;
         }
         
         const badge = item.isPremium ? `<span class="badge premium-badge">Original</span>` : `<span class="badge">Stock</span>`;
         mediaHtml += `${badge}</div>`; 
 
-        // Нижняя текстовая часть карточки
         const infoHtml = `
             <div class="card-info">
                 <h3 class="card-title">${item.title}</h3>
@@ -101,21 +96,17 @@ function renderGrid() {
 
         card.innerHTML = mediaHtml + infoHtml;
 
-        // Наша строгая логика разделения Сток / Твои работы
         card.onclick = () => {
-            // 1. Если это твоя платная работа на Ko-Fi
             if (item.isPremium && item.koFiUrl) {
                 window.open(item.koFiUrl, '_blank');
                 return;
             }
 
-            // 2. Логика для СТОКОВЫХ обоев (Apple, Google, Samsung) — ВСЕГДА открываем коллекцию
             if (item.brand !== 'authors') {
                 openModal(item);
                 return;
             }
 
-            // 3. Логика для ТВОИХ ЛИЧНЫХ работ (brand: 'authors') — гибкий выбор (одиночная или пак)
             if (!item.allImages || item.allImages.length <= 1) {
                 const downloadUrl = (item.allImages && item.allImages.length > 0) ? item.allImages[0] : item.previews[0];
                 window.open(downloadUrl, '_blank');
@@ -130,7 +121,6 @@ function renderGrid() {
     initSliders();
 }
 
-// Запуск слайдеров карточек
 function initSliders() {
     const sliders = document.querySelectorAll('.card-slider');
     
@@ -152,7 +142,7 @@ function initSliders() {
             } else {
                 if (slider.dataset.intervalId) {
                     clearInterval(parseInt(slider.dataset.intervalId));
-                    slider.removeAttribute('data-dataset-interval-id');
+                    slider.removeAttribute('data-interval-id');
                     slider.dataset.intervalId = '';
                 }
             }
@@ -165,7 +155,9 @@ function initSliders() {
 function filterBrand(brand) {
     currentFilter = brand;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     renderGrid();
 }
 
@@ -174,20 +166,27 @@ function openModal(item) {
     document.getElementById('modalTitle').innerText = item.title;
     
     const zipBtn = document.getElementById('modalZipBtn');
-    zipBtn.href = item.zipUrl;
+    if (item.zipUrl && item.zipUrl !== "") {
+        zipBtn.href = item.zipUrl;
+        zipBtn.style.display = 'block';
+    } else {
+        zipBtn.style.display = 'none';
+    }
 
     const modalGrid = document.getElementById('modalGrid');
     modalGrid.innerHTML = '';
 
-    item.allImages.forEach(imgUrl => {
-        const itemWrapper = document.createElement('div');
-        itemWrapper.className = 'modal-item-wrapper';
-        itemWrapper.innerHTML = `
-            <img src="${imgUrl}" alt="Wallpaper">
-            <a href="${imgUrl}" download target="_blank" class="download-single-btn">Download</a>
-        `;
-        modalGrid.appendChild(itemWrapper);
-    });
+    if (item.allImages) {
+        item.allImages.forEach(imgUrl => {
+            const itemWrapper = document.createElement('div');
+            itemWrapper.className = 'modal-item-wrapper';
+            itemWrapper.innerHTML = `
+                <img src="${imgUrl}" alt="Wallpaper">
+                <a href="${imgUrl}" download target="_blank" class="download-single-btn">Download</a>
+            `;
+            modalGrid.appendChild(itemWrapper);
+        });
+    }
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
