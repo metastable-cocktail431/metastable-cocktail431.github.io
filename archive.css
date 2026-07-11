@@ -17,6 +17,9 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+/* ==========================================================================
+   ФОН И ЧИСТОЕ СТЕКЛО
+   ========================================================================== */
 .aurora-bg {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -31,26 +34,29 @@ body {
 .blob-3 { top: 40%; left: 50%; width: 350px; height: 350px; background: #7f00ff; }
 
 .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.35) 100%);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 20px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01), 0 12px 40px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01), 0 12px 40px rgba(0, 0, 0, 0.02);
 }
 
+/* ==========================================================================
+   ШАПКА И ФИЛЬТРЫ
+   ========================================================================== */
 .sticky-header {
     position: fixed; top: 12px; width: calc(100% - 24px); max-width: 480px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 100%);
+    background: rgba(255, 255, 255, 0.55);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 18px;
     padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 999;
 }
 .header-title { font-size: 16px; font-weight: 700; color: #222222; }
 .header-links { display: flex; gap: 8px; }
 .header-btn {
     padding: 6px 14px; font-size: 13px; font-weight: 700; text-decoration: none;
-    color: #222222; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 10px;
+    color: #222222; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px;
 }
 
 .archive-wrapper {
@@ -80,6 +86,9 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
+/* ==========================================================================
+   СЕТКА И КАРТОЧКИ
+   ========================================================================== */
 .wallpaper-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -96,20 +105,22 @@ body {
     transition: transform 0.25s ease;
     padding: 0;
     position: relative;
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
 }
 .wallpaper-card:active { transform: scale(0.97); }
 
-.premium-card {
-    position: relative;
-    border: none;
-}
+/* Эффект тонкой светящейся рамки для твоих работ */
 .premium-card::before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: 20px;
     padding: 1.5px;
-    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 40%, #7f00ff 100%);
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #7f00ff 100%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -122,7 +133,7 @@ body {
     width: 100%;
     aspect-ratio: 9 / 16;
     overflow: hidden;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .card-slider {
@@ -140,12 +151,10 @@ body {
     text-transform: uppercase; border-radius: 7px;
     background: rgba(255, 255, 255, 0.85); color: #222;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 .premium-badge {
     background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
     color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .card-info {
@@ -157,13 +166,16 @@ body {
 .card-title { 
     font-size: 14px; 
     font-weight: 700; 
-    color: #222222; 
+    color: #1c1c1e; 
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* ==========================================================================
+   ВСПЛЫВАЮЩЕЕ ОКНО
+   ========================================================================== */
 .modal-overlay {
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.15); z-index: 1000;
@@ -209,29 +221,31 @@ body {
     color: #222; background: rgba(255,255,255,0.85); border-radius: 8px; backdrop-filter: blur(5px);
 }
 
+/* ==========================================================================
+   АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА
+   ========================================================================== */
 @media (prefers-color-scheme: dark) {
     body { background-color: #000000 !important; }
     .blob { mix-blend-mode: screen !important; opacity: 0.35 !important; }
     
     .sticky-header {
-        background: linear-gradient(135deg, rgba(20, 20, 25, 0.7) 0%, rgba(10, 10, 15, 0.5) 100%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: rgba(20, 20, 25, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
     .header-title { color: #F2F2F7 !important; }
     .header-btn, .filter-container .filter-btn { color: #E5E5EA !important; background: rgba(255, 255, 255, 0.05); border: none; }
     .filter-btn.active { background: rgba(255, 255, 255, 0.15) !important; color: #fff !important; }
     
-    .glass-card {
-        background: linear-gradient(135deg, rgba(20, 20, 25, 0.65) 0%, rgba(10, 10, 15, 0.45) 100%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    .glass-card, .wallpaper-card {
+        background: rgba(20, 20, 25, 0.55) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
     
-    .premium-card {
-        background: linear-gradient(135deg, rgba(25, 20, 35, 0.65) 0%, rgba(10, 5, 20, 0.45) 100%) !important;
-    }
     .premium-card::before {
-        background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%);
-        opacity: 0.8;
+        background: linear-gradient(135deg, #00f2fe 0%, #7f00ff 100%) !important;
+        opacity: 0.9;
     }
 
     .card-media-wrapper { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
