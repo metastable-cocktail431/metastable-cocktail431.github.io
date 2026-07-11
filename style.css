@@ -5,7 +5,11 @@ html {
     scroll-behavior: smooth;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     background-color: #FEFEFE;
@@ -94,29 +98,27 @@ body {
    ========================================================================== */
 .sticky-header {
     position: fixed;
-    top: 12px; /* Отступ сверху, чтобы панель казалась отлипшей */
-    width: calc(100% - 32px); /* Учитываем боковые отступы */
+    top: 12px;
+    width: calc(100% - 32px);
     max-width: 480px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.45);
-    border-radius: 18px; /* Округлые края, как у карточек */
-    padding: 10px 16px;
+    border-radius: 18px;
+    padding: 12px 16px; /* Выровнял внутренние отступы панели */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 999; /* Всегда поверх остального контента */
+    z-index: 999;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
     
-    /* Состояние по умолчанию: скрыта и приподнята */
     opacity: 0;
     transform: translate3d(0, -20px, 0);
-    pointer-events: none; /* Чтобы не кликалась, пока скрыта */
+    pointer-events: none;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Класс, который будет добавляться при скролле через JS */
 .sticky-header.visible {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -177,9 +179,16 @@ body {
     animation-range: entry 5% cover 30%;
 }
 
+/* ОШИБКА ИСПРАВЛЕНА: Закрыл круглую скобку перед scale */
 @keyframes fade-in-up {
-    from { opacity: 0; transform: translate3d(0, 40px, 0 scale(0.96); }
-    to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    from { 
+        opacity: 0; 
+        transform: translate3d(0, 40px, 0) scale(0.96); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translate3d(0, 0, 0) scale(1); 
+    }
 }
 
 .profile-card {
@@ -194,7 +203,7 @@ body {
     gap: 20px;
     position: relative;
     z-index: 1;
-    margin-top: 10px; /* Небольшой отступ под будущую шапку */
+    margin-top: 10px;
 }
 
 /* ==========================================================================
