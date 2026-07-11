@@ -15,7 +15,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body {
-    background-color: #FEFEFE; /* Мягкий базовый цвет */
+    background-color: #FEFEFE;
     font-family: 'Lato', sans-serif;
     min-height: 100vh;
     display: flex;
@@ -23,10 +23,9 @@ body {
     align-items: center;
     padding: 30px 16px;
     position: relative;
-    overflow-x: hidden; /* Чтобы шары не создавали горизонтальную прокрутку */
+    overflow-x: hidden;
     /* Включает плавный «родной» скролл для iOS */
     -webkit-overflow-scrolling: touch;
-    /* Управляет тем, как страница реагирует на жесты */
     touch-action: pan-y;
 }
 
@@ -45,10 +44,12 @@ body {
 .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px); /* Сильное размытие для эффекта градиента */
+    filter: blur(80px);
     opacity: 0.5; 
-    mix-blend-mode: multiply; /* Красивое смешивание цветов */
-    will-change: transform, filter; /* Аппаратное ускорение для плавности на iOS */
+    mix-blend-mode: multiply;
+    /* 3D-хак для включения видеочипа iPhone и плавной анимации фона */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 /* Настройки для десктопа (по умолчанию) */
@@ -57,7 +58,7 @@ body {
     left: -10%;
     width: 450px;
     height: 450px;
-    background: #4facfe; /* Ярко-синий */
+    background: #4facfe;
     animation: fly-1 12s infinite alternate ease-in-out; 
 }
 
@@ -66,7 +67,7 @@ body {
     right: -10%;
     width: 500px;
     height: 500px;
-    background: #00f2fe; /* Голубой / Бирюзовый */
+    background: #00f2fe;
     animation: fly-2 14s infinite alternate ease-in-out; 
 }
 
@@ -75,40 +76,31 @@ body {
     left: 50%;
     width: 350px;
     height: 350px;
-    background: #7f00ff; /* Фиолетово-синий */
+    background: #7f00ff;
     animation: fly-3 10s infinite alternate ease-in-out; 
 }
 
-/* Траектории движения (плавный хаос) */
+/* Траектории движения */
 @keyframes fly-1 {
-    0% { transform: translate(0px, 0px) scale(1); }
-    100% { transform: translate(150px, 200px) scale(1.2); filter: blur(100px); }
+    0% { transform: translate3d(0px, 0px, 0) scale(1); }
+    100% { transform: translate3d(150px, 200px, 0) scale(1.2); }
 }
 
 @keyframes fly-2 {
-    0% { transform: translate(0px, 0px) scale(1.1); }
-    100% { transform: translate(-200px, -150px) scale(0.9); filter: blur(70px); }
+    0% { transform: translate3d(0px, 0px, 0) scale(1.1); }
+    100% { transform: translate3d(-200px, -150px, 0) scale(0.9); }
 }
 
 @keyframes fly-3 {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    100% { transform: translate(-20%, 30%) scale(1.3); filter: blur(90px); }
+    0% { transform: translate3d(-50%, -50%, 0) scale(1); }
+    100% { transform: translate3d(-20%, 30%, 0) scale(1.3); }
 }
 
-/* Адаптация размеров шаров строго для мобильных устройств */
+/* Адаптация размеров шаров для мобильных устройств */
 @media (max-width: 480px) {
-    .blob-1 {
-        width: 260px;
-        height: 260px;
-    }
-    .blob-2 {
-        width: 280px;
-        height: 280px;
-    }
-    .blob-3 {
-        width: 220px;
-        height: 220px;
-    }
+    .blob-1 { width: 260px; height: 260px; }
+    .blob-2 { width: 280px; height: 280px; }
+    .blob-3 { width: 220px; height: 220px; }
 }
 
 /* ==========================================================================
@@ -126,6 +118,9 @@ body {
         0 4px 30px rgba(0, 0, 0, 0.01),
         0 12px 40px rgba(0, 0, 0, 0.03),
         inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    /* Разгружаем процессор iPhone при скролле стеклянных блоков */
+    will-change: backdrop-filter, transform;
+    transform: translate3d(0, 0, 0);
 }
 
 .main-wrapper {
@@ -135,7 +130,7 @@ body {
     flex-direction: column;
     gap: 20px;
     position: relative;
-    z-index: 1; /* Контент поверх фона */
+    z-index: 1;
 }
 
 /* ==========================================================================
@@ -260,7 +255,7 @@ body {
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 0.8s ease-in-out; /* Чуть ускорил для плавности переключения */
 }
 
 .slider-container img.active {
@@ -272,7 +267,7 @@ body {
 }
 
 /* ==========================================================================
-   6. АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА (Приоритетное перекрытие стилей)
+   6. АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА
    ========================================================================== */
 @media (prefers-color-scheme: dark) {
     body {
@@ -359,10 +354,11 @@ body {
         <h3 class="project-title">Project One</h3>
         <p class="project-desc">Здесь будет описание твоего первого проекта или набора обоев. Расскажи кратко, о чём речь.</p>
          
+        <!-- Хак: Запрашиваем сжатый современный WebP формат картинок под размер мобильного экрана -->
         <div class="slider-container auto-slider">
-            <img src="https://picsum.photos/400/500?random=1" class="active" alt="Slide 1">
-            <img src="https://picsum.photos/400/500?random=2" alt="Slide 2">
-            <img src="https://picsum.photos/400/500?random=3" alt="Slide 3">
+            <img src="https://picsum.photos/400/500.webp?random=1" class="active" alt="Slide 1">
+            <img src="https://picsum.photos/400/500.webp?random=2" alt="Slide 2">
+            <img src="https://picsum.photos/400/500.webp?random=3" alt="Slide 3">
         </div>
 
         <a href="" target="_blank" class="glass-btn">View Project</a>
@@ -373,9 +369,9 @@ body {
         <p class="project-desc">Описание для второго проекта. Стильный текст, который дополнит визуал в слайдере выше.</p>
          
         <div class="slider-container auto-slider">
-            <img src="https://picsum.photos/400/500?random=4" class="active" alt="Slide 1">
-            <img src="https://picsum.photos/400/500?random=5" alt="Slide 2">
-            <img src="https://picsum.photos/400/500?random=6" alt="Slide 3">
+            <img src="https://picsum.photos/400/500.webp?random=4" class="active" alt="Slide 1">
+            <img src="https://picsum.photos/400/500.webp?random=5" alt="Slide 2">
+            <img src="https://picsum.photos/400/500.webp?random=6" alt="Slide 3">
         </div>
 
         <a href="" target="_blank" class="glass-btn">View Project</a>
@@ -386,9 +382,9 @@ body {
         <p class="project-desc">Описание для третьего проекта. Всё выстроено в едином аккуратном мобильном стиле.</p>
          
         <div class="slider-container auto-slider">
-            <img src="https://picsum.photos/400/500?random=7" class="active" alt="Slide 1">
-            <img src="https://picsum.photos/400/500?random=8" alt="Slide 2">
-            <img src="https://picsum.photos/400/500?random=9" alt="Slide 3">
+            <img src="https://picsum.photos/400/500.webp?random=7" class="active" alt="Slide 1">
+            <img src="https://picsum.photos/400/500.webp?random=8" alt="Slide 2">
+            <img src="https://picsum.photos/400/500.webp?random=9" alt="Slide 3">
         </div>
 
         <a href="" target="_blank" class="glass-btn">View Project</a>
