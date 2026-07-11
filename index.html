@@ -107,16 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const trigger = document.getElementById('triggerLinks');
 
     window.addEventListener('scroll', () => {
-        // Получаем нижнюю координату блока больших кнопок
         const triggerBottom = trigger.getBoundingClientRect().bottom;
 
-        // Если большие кнопки скрылись за верхним краем экрана, показываем парящую шапку
         if (triggerBottom < 0) {
             header.classList.add('visible');
         } else {
             header.classList.remove('visible');
         }
-    }, { passive: true }); // passive оптимизирует производительность скролла на смартфонах
+    }, { passive: true });
 });
 </script>
 
