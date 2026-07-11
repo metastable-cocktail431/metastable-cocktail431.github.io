@@ -12,6 +12,14 @@
 </head>
 <body>
 
+<header class="sticky-header" id="stickyHeader">
+    <span class="header-title">@axrnovi</span>
+    <div class="header-links">
+        <a href="" target="_blank" rel="noopener noreferrer" class="header-btn">Threads</a>
+        <a href="" target="_blank" rel="noopener noreferrer" class="header-btn">Wallpapers</a>
+    </div>
+</</header>
+
 <div class="aurora-bg">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -30,8 +38,7 @@
         </div>
     </div>
 
-    <div class="glass-card links-card">
-        <!-- Добавлен rel="noopener noreferrer" для абсолютной безопасности вкладок -->
+    <div class="glass-card links-card" id="triggerLinks">
         <a href="" target="_blank" rel="noopener noreferrer" class="glass-btn">
             Threads
         </a>
@@ -83,18 +90,33 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Скрипт авто-слайдеров
     const sliders = document.querySelectorAll('.auto-slider');
-     
     sliders.forEach(slider => {
         const images = slider.querySelectorAll('img');
         let currentIndex = 0;
-         
         setInterval(() => {
             images[currentIndex].classList.remove('active');
             currentIndex = (currentIndex + 1) % images.length;
             images[currentIndex].classList.add('active');
         }, 3500);
     });
+
+    // 2. Умное отслеживание скролла для парящей шапки
+    const header = document.getElementById('stickyHeader');
+    const trigger = document.getElementById('triggerLinks');
+
+    window.addEventListener('scroll', () => {
+        // Получаем нижнюю координату блока больших кнопок
+        const triggerBottom = trigger.getBoundingClientRect().bottom;
+
+        // Если большие кнопки скрылись за верхним краем экрана, показываем парящую шапку
+        if (triggerBottom < 0) {
+            header.classList.add('visible');
+        } else {
+            header.classList.remove('visible');
+        }
+    }, { passive: true }); // passive оптимизирует производительность скролла на смартфонах
 });
 </script>
 
