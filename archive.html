@@ -12,6 +12,7 @@
 </head>
 <body>
 
+<!-- Парящая верхняя строка -->
 <header class="sticky-header visible">
     <span class="header-title">@axrnovi</span>
     <div class="header-links">
@@ -20,6 +21,7 @@
     </div>
 </header>
 
+<!-- Фирменный живой фон -->
 <div class="aurora-bg">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -27,6 +29,7 @@
 </div>
 
 <div class="archive-wrapper">
+    <!-- Кнопки-фильтры по брендам -->
     <div class="glass-card filter-container">
         <button class="filter-btn active" onclick="filterBrand('all')">All</button>
         <button class="filter-btn" onclick="filterBrand('authors')">My Work</button>
@@ -35,15 +38,18 @@
         <button class="filter-btn" onclick="filterBrand('samsung')">Samsung</button>
     </div>
 
+    <!-- Двухколоночная сетка -->
     <div class="wallpaper-grid" id="wallpaperGrid"></div>
 </div>
 
+<!-- ВСПЛЫВАЮЩЕЕ СТЕКЛЯННОЕ ОКНО КОЛЛЕКЦИИ (MODAL) -->
 <div class="modal-overlay" id="wallpaperModal" onclick="closeModal(event)">
     <div class="glass-card modal-content" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeModal(event)">✕</button>
         <h2 class="modal-title" id="modalTitle">Collection</h2>
         <a href="#" id="modalZipBtn" target="_blank" rel="noopener noreferrer" class="glass-btn zip-download-btn">Download full pack (.zip)</a>
         
+        <!-- Сетка картинок внутри коллекции -->
         <div class="modal-grid" id="modalGrid"></div>
     </div>
 </div>
@@ -77,26 +83,29 @@ function renderGrid() {
         const card = document.createElement('div');
         card.className = `glass-card wallpaper-card ${item.isPremium ? 'premium-card' : ''}`;
         
-        let mediaHtml = '';
+        // Генерируем медиа-блок со слайдером внутри отдельного контейнера
+        let mediaHtml = '<div class="card-media-wrapper">';
         if (item.previews.length > 1) {
-            mediaHtml = `<div class="card-slider">`;
+            mediaHtml += `<div class="card-slider">`;
             item.previews.forEach((img, i) => {
                 mediaHtml += `<img src="${img}" class="${i === 0 ? 'active' : ''}" alt="Preview">`;
             });
             mediaHtml += `</div>`;
         } else {
-            mediaHtml = `<div class="card-slider"><img src="${item.previews[0]}" class="active" alt="Preview"></div>`;
+            mediaHtml += `<div class="card-slider"><img src="${item.previews[0]}" class="active" alt="Preview"></div>`;
         }
-
+        
         const badge = item.isPremium ? `<span class="badge premium-badge">Original</span>` : `<span class="badge">Stock</span>`;
+        mediaHtml += `${badge}</div>`; // закрываем card-media-wrapper
 
-        card.innerHTML = `
-            ${mediaHtml}
-            ${badge}
+        // Нижняя текстовая часть карточки
+        const infoHtml = `
             <div class="card-info">
                 <h3 class="card-title">${item.title}</h3>
             </div>
         `;
+
+        card.innerHTML = mediaHtml + infoHtml;
 
         card.onclick = () => {
             if (item.isPremium) {
@@ -151,6 +160,7 @@ function filterBrand(brand) {
     renderGrid();
 }
 
+// Открытие всплывающего окна
 function openModal(item) {
     const modal = document.getElementById('wallpaperModal');
     document.getElementById('modalTitle').innerText = item.title;
@@ -164,7 +174,6 @@ function openModal(item) {
     item.allImages.forEach(imgUrl => {
         const itemWrapper = document.createElement('div');
         itemWrapper.className = 'modal-item-wrapper';
-        // Текст кнопки изменен на английский (Download)
         itemWrapper.innerHTML = `
             <img src="${imgUrl}" alt="Wallpaper">
             <a href="${imgUrl}" download target="_blank" class="download-single-btn">Download</a>
@@ -184,3 +193,5 @@ function closeModal(e) {
 
 document.addEventListener("DOMContentLoaded", loadWallpaperData);
 </script>
+</body>
+</html>
