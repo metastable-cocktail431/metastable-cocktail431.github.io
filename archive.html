@@ -1,16 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Wallpapers Archive — @axrnovi</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡️</text></svg>">
+<link rel="stylesheet" href="archive.css">
+</head>
+<body>
+
+<header class="sticky-header visible">
+    <span class="header-title">@axrnovi</span>
+    <div class="header-links">
+        <a href="index.html" class="header-btn">Home</a>
+        <a href="https://www.threads.net/@axrnovi" target="_blank" rel="noopener noreferrer" class="header-btn">Threads</a>
+    </div>
+</header>
+
+<div class="aurora-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+</div>
+
+<div class="archive-wrapper">
+    <div class="glass-card filter-container">
+        <button class="filter-btn active" onclick="filterBrand('all')">All</button>
+        <button class="filter-btn" onclick="filterBrand('authors')">My Work</button>
+        <button class="filter-btn" onclick="filterBrand('apple')">Apple</button>
+        <button class="filter-btn" onclick="filterBrand('google')">Pixel</button>
+        <button class="filter-btn" onclick="filterBrand('samsung')">Samsung</button>
+    </div>
+
+    <div class="wallpaper-grid" id="wallpaperGrid"></div>
+</div>
+
+<div class="modal-overlay" id="wallpaperModal" onclick="closeModal(event)">
+    <div class="glass-card modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal(event)">✕</button>
+        <h2 class="modal-title" id="modalTitle">Collection</h2>
+        <a href="#" id="modalZipBtn" target="_blank" rel="noopener noreferrer" class="glass-btn zip-download-btn">Download full pack (.zip)</a>
+        
+        <div class="modal-grid" id="modalGrid"></div>
+    </div>
+</div>
+
 <script>
-let wallpaperData = []; // Сюда загрузятся данные из JSON
+let wallpaperData = []; 
 let currentFilter = 'all';
 
-// Функция, которая загружает данные из отдельного файла wallpapers.json
+// Загрузка данных из внешнего JSON-файла
 async function loadWallpaperData() {
     try {
-        // Сайт сам читает внешний файл данных
         const response = await fetch('wallpapers.json');
         wallpaperData = await response.json();
-        renderGrid(); // После загрузки рисуем сетку
+        renderGrid(); 
     } catch (error) {
-        console.error("Ошибка загрузки базы данных обоев:", error);
+        console.error("Error loading wallpaper database:", error);
     }
 }
 
@@ -19,7 +68,7 @@ function renderGrid() {
     const grid = document.getElementById('wallpaperGrid');
     grid.innerHTML = '';
     
-    // Автоматический реверс: новое в файле JSON всегда будет первым на экране!
+    // Автоматический реверс новинок наверх
     const displayData = [...wallpaperData].reverse();
 
     displayData.forEach((item) => {
@@ -63,7 +112,7 @@ function renderGrid() {
     initSliders();
 }
 
-// Запуск слайдеров, которые работают только в поле видимости
+// Запуск умных слайдеров
 function initSliders() {
     const sliders = document.querySelectorAll('.card-slider');
     
@@ -115,9 +164,10 @@ function openModal(item) {
     item.allImages.forEach(imgUrl => {
         const itemWrapper = document.createElement('div');
         itemWrapper.className = 'modal-item-wrapper';
+        // Текст кнопки изменен на английский (Download)
         itemWrapper.innerHTML = `
             <img src="${imgUrl}" alt="Wallpaper">
-            <a href="${imgUrl}" download target="_blank" class="download-single-btn">Скачать</a>
+            <a href="${imgUrl}" download target="_blank" class="download-single-btn">Download</a>
         `;
         modalGrid.appendChild(itemWrapper);
     });
@@ -132,6 +182,5 @@ function closeModal(e) {
     document.body.style.overflow = '';
 }
 
-// При старте страницы запускаем загрузку внешнего JSON-файла
 document.addEventListener("DOMContentLoaded", loadWallpaperData);
 </script>
