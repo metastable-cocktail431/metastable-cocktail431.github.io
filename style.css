@@ -2,7 +2,7 @@
    1. БАЗОВЫЕ НАСТРОЙКИ И ЖИВОЙ АНИМИРОВАННЫЙ ФОН
    ========================================================================== */
 html {
-    scroll-behavior: smooth; /* Лайфхак 1: Плавный скролл */
+    scroll-behavior: smooth;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -90,7 +90,69 @@ body {
 }
 
 /* ==========================================================================
-   2. ПРЕМИАЛЬНОЕ ЖИДКОЕ СТЕКЛО + АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ
+   2. ПАРЯЩАЯ СТЕКЛЯННАЯ ШАПКА (STICKY HEADER)
+   ========================================================================== */
+.sticky-header {
+    position: fixed;
+    top: 12px; /* Отступ сверху, чтобы панель казалась отлипшей */
+    width: calc(100% - 32px); /* Учитываем боковые отступы */
+    max-width: 480px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.45) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 18px; /* Округлые края, как у карточек */
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999; /* Всегда поверх остального контента */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+    
+    /* Состояние по умолчанию: скрыта и приподнята */
+    opacity: 0;
+    transform: translate3d(0, -20px, 0);
+    pointer-events: none; /* Чтобы не кликалась, пока скрыта */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Класс, который будет добавляться при скролле через JS */
+.sticky-header.visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    pointer-events: auto;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222222;
+}
+
+.header-links {
+    display: flex;
+    gap: 8px;
+}
+
+.header-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #222222;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+@media (hover: hover) {
+    .header-btn:hover { background: rgba(255, 255, 255, 0.75); }
+}
+.header-btn:active { transform: scale(0.96); }
+
+/* ==========================================================================
+   3. ПРЕМИАЛЬНОЕ ЖИДКОЕ СТЕКЛО + АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ
    ========================================================================== */
 .glass-card {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%);
@@ -107,7 +169,6 @@ body {
     will-change: backdrop-filter, transform;
     transform: translate3d(0, 0, 0);
 
-    /* Лайфхак 4: Плавное выплывание карточек при скролле через CSS */
     view-timeline-name: --card-scroll;
     view-timeline-axis: block;
     animation-name: fade-in-up;
@@ -117,17 +178,10 @@ body {
 }
 
 @keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 40px, 0) scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-    }
+    from { opacity: 0; transform: translate3d(0, 40px, 0 scale(0.96); }
+    to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
-/* Первая карточка профиля на самом верху не должна выплывать, она видна сразу */
 .profile-card {
     animation: none;
 }
@@ -140,10 +194,11 @@ body {
     gap: 20px;
     position: relative;
     z-index: 1;
+    margin-top: 10px; /* Небольшой отступ под будущую шапку */
 }
 
 /* ==========================================================================
-   3. КАРТОЧКА ПРОФИЛЯ
+   4. КАРТОЧКА ПРОФИЛЯ И КНОПКИ
    ========================================================================== */
 .profile-card {
     display: flex;
@@ -178,9 +233,6 @@ body {
     font-weight: 400;
 }
 
-/* ==========================================================================
-   4. КАРТОЧКА С КНОПКАМИ И ОБЩИЕ СТИЛИ КНОПОК
-   ========================================================================== */
 .links-card {
     display: flex;
     flex-direction: column;
@@ -211,39 +263,26 @@ body {
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.02);
     }
 }
-
-.glass-btn:active {
-    background: rgba(255, 255, 255, 0.75);
-    transform: scale(0.98) translateY(0px);
-}
+.glass-btn:active { background: rgba(255, 255, 255, 0.75); transform: scale(0.98) translateY(0px); }
 
 /* ==========================================================================
-   5. КАРТОЧКИ С ПРОЕКТАМИ И СЛАЙДЕРАМИ (ЗАЩИТА ОТ СКАЧКОВ)
+   5. КАРТОЧКИ С ПРОЕКТАМИ И СЛАЙДЕРАМИ
    ========================================================================== */
 .project-card {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    content-visibility: auto; /* Лайфхак 2: Не рендерит нижние блоки, пока до них не доскроллят */
+    content-visibility: auto;
     contain-intrinsic-size: auto 400px;
 }
 
-.project-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #222222;
-}
-
-.project-desc {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333333;
-}
+.project-title { font-size: 22px; font-weight: 700; color: #222222; }
+.project-desc { font-size: 16px; line-height: 1.5; color: #333333; }
 
 .slider-container {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 5; /* Жестко держит пропорции картинок, спасая от скачков верстки */
+    aspect-ratio: 4 / 5;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -262,13 +301,8 @@ body {
     transition: opacity 0.8s ease-in-out;
 }
 
-.slider-container img.active {
-    opacity: 1;
-}
-
-.project-card .glass-btn {
-    margin-top: 4px;
-}
+.slider-container img.active { opacity: 1; }
+.project-card .glass-btn { margin-top: 4px; }
 
 /* ==========================================================================
    6. АВТОМАТИЧЕСКАЯ ТЁМНАЯ ТЕМА
@@ -276,6 +310,16 @@ body {
 @media (prefers-color-scheme: dark) {
     body { background-color: #000000 !important; }
     .blob { mix-blend-mode: screen !important; opacity: 0.35 !important; }
+    
+    .sticky-header {
+        background: linear-gradient(135deg, rgba(20, 20, 25, 0.7) 0%, rgba(10, 10, 15, 0.5) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .header-title { color: #F2F2F7 !important; }
+    .header-btn { background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; color: #E5E5EA !important; }
+    @media (hover: hover) { .header-btn:hover { background: rgba(255, 255, 255, 0.15) !important; } }
+
     .glass-card {
         background: linear-gradient(135deg, rgba(20, 20, 25, 0.65) 0%, rgba(10, 10, 15, 0.45) 100%) !important;
         border: 1px solid rgba(255, 255, 255, 0.12) !important;
