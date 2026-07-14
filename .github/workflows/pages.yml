@@ -1,0 +1,47 @@
+name: GitHub Pages CI
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Inject
+        env:
+          A9BF96: ${{ secrets.A9BF96 }}
+          B1F47D: ${{ secrets.B1F47D }}
+        run: |
+          python3 -c "
+          import pathlib, sys, os
+          env_a = os.environ.get('A9BF96', '')
+          env_b = os.environ.get('B1F47D', '')
+          doc = pathlib.Path('index.html')
+          body = doc.read_text(encoding='utf-8')
+          result = body
+          if env_a:
+              result = result.replace('<!-- 81f26f1e947b697af5c2191343f18c34597b943a601d -->', env_a)
+          if env_b:
+              result = result.replace('<!-- caca5417a02fb7c40b33b7c08d240b6b55085639056a0a -->', env_b)
+          if result == body and (env_a or env_b):
+              sys.exit(1)
+          if result != body:
+              doc.write_text(result, encoding='utf-8')
+          "
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: publish
+        uses: actions/deploy-pages@v4
